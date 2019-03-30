@@ -22,7 +22,7 @@ import java.util.Vector;
  */
 public class testhd {
 
-    String fileName = "C:\\Users\\USER\\Documents\\NetBeansProjects\\HeatDiffusion\\test\\Test\\df.txt";
+    String fileName = System.getProperty("user.dir") + "/test//Test//df.txt";
     String line = null;
     double tol = 1e-8;
     String methodToTest = "HeatDiffusion.getSolution";
@@ -86,7 +86,7 @@ public class testhd {
             parTest.put("testLogger0", testFileLogger);
             logTest(parTest, "start", false);
 
-            parTest.put(TESTCASE, "f= "+DoE.get(0)+"u(0)="+DoE.get(1)+" u(n+1)="+DoE.get(2)+" n="+DoE.get(3)+" " );
+            parTest.put(TESTCASE, "f= "+DoE.get(0)+"  u(0)="+DoE.get(1)+"  u(n+1)="+DoE.get(2)+"  n="+DoE.get(3)+" " );
             boolean result= oracle((double)DoE.get(1),(double)DoE.get(2),(int)DoE.get(3),(String)DoE.get(0));
             parTest.put(TESTRESULT, result);
             parTest.put("testendtime", "" + System.currentTimeMillis());
