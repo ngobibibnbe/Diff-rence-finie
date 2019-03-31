@@ -6,6 +6,7 @@
 package EDP;
 
 import static Test.DefaultTestLogger.logTest;
+import Test.testhd;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class HeatDiffusionTest {
     String methodToTest = "HeatDiffusion.getSolution";
     String testFileLogger = "Test.FileTestLogger";
     String classeATester = "HeatDiffusion";
+    testhd testcl=new testhd(); 
     public HeatDiffusionTest() {
     }
     
@@ -56,11 +58,11 @@ public class HeatDiffusionTest {
      * Test of getSolution method, of class HeatDiffusion.
      */
     @Test
-    public void testGetSolution() {
+    public void testGetSolution() throws Exception {
         System.out.println("getSolution");
         HeatDiffusion instance = null;
         Vector<Double> expResult = null;
-        Vector<Double> result = instance.getSolution();
+        //Vector<Double> result = instance.getSolution();
          Map parTest = new HashMap();
         String TESTSTARTTIME = "teststarttime";
         String TESTCASE = "testcase";
@@ -73,40 +75,9 @@ public class HeatDiffusionTest {
         String TESTENDTIME = "testendtime";
 
         long startTime = System.currentTimeMillis();
-        parTest.put("classtotest", classeATester);
-        parTest.put("testreference", methodToTest);
-        parTest.put("teststarttime", "" + startTime);
-        parTest.put("testLogger0", testFileLogger);
-        logTest(parTest, "start", false);
-
-        parTest.put(TESTCASE, "mon cas de test");
-        parTest.put(TESTREFERENCE, "REFERENCE test");
-        //il est de type throwable parTest.put(TESTERROR, "ERREUR DE  test");
-        parTest.put(TESTRESULT, true);
-        parTest.put(LFM, "lfm");
-        parTest.put(TESTOBJECT, "OBJET  test");
-        parTest.put("testendtime", "" + System.currentTimeMillis());
-        logTest(parTest, "end", false);
-
-        parTest.put("classtotest", classeATester);
-        parTest.put("testreference", methodToTest);
-        parTest.put("teststarttime", "" + startTime);
-        parTest.put("testLogger0", testFileLogger);
-        logTest(parTest, "start", false);
-
-        parTest.put(TESTCASE, "mon cas de test 2");
-        parTest.put(TESTREFERENCE, "REFERENCE test2");
-        //il est de type throwable parTest.put(TESTERROR, "ERREUR DE  test");
-        parTest.put(PRINTERRORTRACE, "TRACE DE L ERREUR test");
-        parTest.put(TESTRESULT, false);
-        parTest.put(LFM, "lfm");
-        parTest.put(TESTOBJECT, "OBJET  test");
-        //  parTest.put(TESTENDTIME, "FIN DE  test");
-
-        parTest.put("testendtime", "" + System.currentTimeMillis());
-        logTest(parTest, "end", false);
+        
         //on verifie chacun des tests et on les ecrits dans notre fichier log 
-        Stack data = data();
+        Stack data = testcl.data();
         ArrayList DoE;
         int i=0;
         while (!data.empty()) {i++;
@@ -119,7 +90,9 @@ public class HeatDiffusionTest {
             logTest(parTest, "start", false);
 
             parTest.put(TESTCASE, "cas "+i+"f= "+DoE.get(0)+"  u(0)="+DoE.get(1)+"  u(n+1)="+DoE.get(2)+"  n="+DoE.get(3)+" " );
-            boolean result= oracle((double)DoE.get(1),(double)DoE.get(2),(int)DoE.get(3),(String)DoE.get(0));
+            boolean result= testcl.oracle((double)DoE.get(1),(double)DoE.get(2),(int)DoE.get(3),(String)DoE.get(0));
+                    assertEquals("le resultat est", result,true);
+
             parTest.put(TESTRESULT, result);
             parTest.put("testendtime", "" + System.currentTimeMillis());
             logTest(parTest, "end", false);
@@ -128,9 +101,8 @@ public class HeatDiffusionTest {
 
         }
         
-        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // fail("The test case is a prototype.");
     }
 
     /**
