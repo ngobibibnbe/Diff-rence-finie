@@ -19,9 +19,11 @@ public abstract class EDP1 implements EDP<Double>{
     public double a;
     public double b;
     public int N;
-    public Vector<Double> B;
+    public Vector<Double> B=null;
 
     public EDP1(double a, double b, int N, Vector<Double> B) {
+               
+
         this.setConstraint(a, b);
         this.setProblem(N,B);
     }
@@ -29,6 +31,8 @@ public abstract class EDP1 implements EDP<Double>{
     @Override
     public final void setProblem(int N, Vector<Double> B) {
         if(N <= 0 || B == null || B.size() != N){
+                        System.out.println("all n is "+N+" "+B.size());
+
             throw new IllegalArgumentException("Wrong Problem definition");
         }else{
            this.N = N;

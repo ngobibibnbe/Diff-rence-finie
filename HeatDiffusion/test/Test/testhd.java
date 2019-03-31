@@ -77,7 +77,8 @@ public class testhd {
         //on verifie chacun des tests et on les ecrits dans notre fichier log 
         Stack data = data();
         ArrayList DoE;
-        while (data.capacity() != 0) {
+        int i=0;
+        while (!data.empty()) {i++;
             DoE = (ArrayList) data.pop();
             startTime = System.currentTimeMillis();
             parTest.put("classtotest", classeATester);
@@ -86,7 +87,7 @@ public class testhd {
             parTest.put("testLogger0", testFileLogger);
             logTest(parTest, "start", false);
 
-            parTest.put(TESTCASE, "f= "+DoE.get(0)+"  u(0)="+DoE.get(1)+"  u(n+1)="+DoE.get(2)+"  n="+DoE.get(3)+" " );
+            parTest.put(TESTCASE, "cas "+i+"f= "+DoE.get(0)+"  u(0)="+DoE.get(1)+"  u(n+1)="+DoE.get(2)+"  n="+DoE.get(3)+" " );
             boolean result= oracle((double)DoE.get(1),(double)DoE.get(2),(int)DoE.get(3),(String)DoE.get(0));
             parTest.put(TESTRESULT, result);
             parTest.put("testendtime", "" + System.currentTimeMillis());
@@ -97,37 +98,38 @@ public class testhd {
         }
     }
 
-    boolean oracle(double a, double b, int n, String x) {
-        Vector<Double> F=new Vector();
+   public boolean oracle(double a, double b, int n, String x) {
+        Vector<Double> F=new Vector(); 
         if (x.equals("x")) {
 
-                        for (int i = 1; i < n; i++) {
-                            F.add(1.0*i / n);
+                        for (int i = 1; i < n+1; i++) {
+                         F.add((1.0*i) /( n+1));
+                               //   System.out.println( (1.0*i)/(n+1) );
                         }
                     } else {
-                        for (int i = 1; i < n; i++) {
+                        for (int i = 1; i < n+1; i++) {
                             F.add(0.0);
                         }
                     }
-        System.out.println("teille de f"+F.size()+" "+n);
-         if(n<=1){
+        //System.out.println("teille de f est "+F+" et n est "+n);
+         if(n<=0){
             try{
-             HeatDiffusion df1 = new HeatDiffusion(a, b, n-1, F);}
+             HeatDiffusion df1 = new HeatDiffusion(a, b, n, F);}
             catch(Exception e){
                 return true;
             }
-        }
-        HeatDiffusion df = new HeatDiffusion(a, b, n-1, F);
+        return false;}
+         else{
+             HeatDiffusion df = new HeatDiffusion(a, b, n, F);
         double max = 0;
         double rob=0;
         Vector U = df.getSolution();
-        for (int i = 0; i < F.size(); i++) {
-            
+        
             if(U.size()==1){
-               
+               int i=0;
              
-                rob=((double)b + (double) a - 2 * ((double) U.get(i)));
-                rob = Math.pow(n, 2) * rob - (double) F.get(i);
+                rob=((double)b + (double) a - (2 * ((double) U.get(i))));
+                rob = Math.pow(n+1, 2) * rob - (double) F.get(i);
                 rob = Math.abs(rob);
                 if (rob > max) {
                     max = rob;
@@ -135,45 +137,51 @@ public class testhd {
 
             } 
             }
-            else if (i == 0 && U.size()!=1) { 
+            else{
+        for (int i = 0; i < F.size(); i++) {
+            
+            if (i == 0) { 
                 
               Double  Ui1=(double) U.get(i + 1);
               double  Ui_1=(double) a;
-                rob=((double) U.get(i + 1) + (double) a - 2 * ((double) U.get(i)));
-                rob = Math.pow(n, 2) * rob - (double) F.get(i);
+                rob=((double) U.get(i + 1) + ((double) a - 2 * ((double) U.get(i))));
+                rob =( Math.pow(n+1, 2) * rob) - (double) F.get(i);
                 rob = Math.abs(rob);
                 if (rob > max) {
                     max = rob;
                 }
 
             } else if (i == F.size() - 1) {
-                rob = Math.pow(n, 2) * ((double) b + (double) U.get(i - 1) - 2 * ((double) U.get(i))) - (double) F.get(i);
+                rob = Math.pow(n+1, 2) * ((double) b + (double) U.get(i - 1) - (2 * ((double) U.get(i)))) - (double) F.get(i);
 
                 rob = Math.abs(rob);
                 if (rob > max) {
                     max = rob;
                 }
             } else {
-                rob = Math.pow(n, 2) * ((double) U.get(i - 1) + (double) U.get(i + 1) - 2 * ((double) U.get(i))) - (double) F.get(i);
+                rob = Math.pow(n+1, 2) * ((double) U.get(i - 1) + (double) U.get(i + 1) - (2 * ((double) U.get(i)))) - (double) F.get(i);
                 rob = Math.abs(rob);
-                if (rob > max) {
+                if (rob  > max) {
                     max = rob;
                 }
             }
 
-        }
 
+        }
+                   System.out.println("l'erreur de  consistace est est"+max+"et tol c ezst"+tol);
+ }
         if (max < tol) {
             return true;
         } else {
             return false;
         }
-    }
+    
+    }}
 
-    Stack data() {
+    public Stack data() {
         Stack pile = new Stack();//on va garder nos donnés de test dans cette pile .
 
-        String fichier = "C:\\Users\\USER\\Documents\\NetBeansProjects\\HeatDiffusion\\test\\Test\\df.txt";
+        String fichier = System.getProperty("user.dir") + "/test//Test//df.txt";
 
         try {
             int n;
@@ -190,10 +198,10 @@ public class testhd {
                 while ((line = buff.readLine()) != null) {
                     donne_entre = new ArrayList();
                     F = new Vector();
-                    System.out.println(line.split(" ")[3] + "  " + o++);
+                  //  System.out.println(line.split(" ")[3] + "  " + o++);
                     n = Integer.parseInt(line.split(" ")[3]);
                     h = (double) 1 / n;
-                   System.out.println(h);
+                   //System.out.println(h);
                     a = Double.parseDouble(line.split(" ")[1]);
                     b = Double.parseDouble(line.split(" ")[2]);
                     if (line.split(" ")[4].equals("x")) {
@@ -229,8 +237,13 @@ public class testhd {
 
     public static void main(String[] args) throws Exception {
         testhd d = new testhd();
-         d.data();
-       d.test();
+        // d.data();
+         
+     d.test();
+      
+     boolean re=d.oracle(333000000, 2.0 ,3330, "x");
+             //System.out.println(re);
+
     }
 
 }

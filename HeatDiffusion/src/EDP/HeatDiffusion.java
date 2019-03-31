@@ -14,11 +14,11 @@ public class HeatDiffusion extends EDP1{
      */
     public static void main(String[] args) {
        Vector<Double> B = new Vector();
-       int N = 1000;
+       int N = 4;
        for(int i = 1; i < N ; i++){
            B.add(1.0*i/N);
        }
-       HeatDiffusion H = new HeatDiffusion(0.0, 1.0, N-1, B);
+       HeatDiffusion H = new HeatDiffusion(333000, 2.0, N-1, B);
        H.getSolution();
     }
 
