@@ -99,19 +99,37 @@ public class testhd {
     }
 
    public boolean oracle(double a, double b, int n, String x) {
-        Vector<Double> F=new Vector(); 
+             Vector<Double> F=new Vector(); 
+       
+        /******* initialisation du vecteur F qui est un paramètre de 
+         notre fonction heatdiffusion
+          *******/
         if (x.equals("x")) {
 
                         for (int i = 1; i < n+1; i++) {
                          F.add((1.0*i) /( n+1));
                                //   System.out.println( (1.0*i)/(n+1) );
                         }
-                    } else {
+                    } else if(x.equals("null")){
                         for (int i = 1; i < n+1; i++) {
                             F.add(0.0);
                         }
                     }
+        else if(x.equals("x2")){
+                        for (int i = 1; i < n+1; i++) {
+                            F.add(Math.pow((1.0*i) /( n+1), 2));
+                        }
+                    }
+        else if(x.equals("exp")){
+                        for (int i = 1; i < n+1; i++) {
+                            F.add(Math.exp((1.0*i) /( n+1)));
+                        }
+                    }
         //System.out.println("teille de f est "+F+" et n est "+n);
+        /************FIN DE L INITIALISATION DE F***************/
+        
+        
+        /************ON VERIFIE QUE F RESPECTE LES CRITERES SINON ON RETOURNZ UNE EXCEPTION***************/
          if(n<=0){
             try{
              HeatDiffusion df1 = new HeatDiffusion(a, b, n, F);}
@@ -119,65 +137,68 @@ public class testhd {
                 return true;
             }
         return false;}
-         else{
+         
+         /************SI ON ARRIVE ICI CA VEUX DIRE QUE F N A PAS RETOURNE D EXCEOTION
+          A PARTIR D ICI ON CALCULE L ECART MAX ENTRE LE RESULTAT EXACTE ET LE RESULTAT TROUVE
+          ***************/
+         else{ tol=0.5;
              HeatDiffusion df = new HeatDiffusion(a, b, n, F);
-        double max = 0;
-        double rob=0;
-        Vector U = df.getSolution();
-        
-            if(U.size()==1){
-               int i=0;
-             
-                rob=((double)b + (double) a - (2 * ((double) U.get(i))));
-                rob = Math.pow(n+1, 2) * rob - (double) F.get(i);
-                rob = Math.abs(rob);
-                if (rob > max) {
-                    max = rob;
-                
-
-            } 
+        double errmax = 0;
+        double err=0;
+        Vector<Double> U = df.getSolution();
+ 
+        if(x.equals("x")){
+            for(int i=0;i<U.size();i++){
+                err=(Math.pow(((i+1)/(n+1)), 3)/6)+(b-a-(1/6))*((i+1)/(n+1))+a;
+                err=Math.abs(err-(double)U.get(i));
+                if(err>errmax){
+                    errmax=err;
+                }
             }
-            else{
-        for (int i = 0; i < F.size(); i++) {
+        }else if(x.equals("null")){
+                          for(int i=0;i<U.size();i++){
+                err=(b-a)*((i+1)/(n+1))+a;
+                                err=Math.abs(err-(double)U.get(i));
+
+                if(err>errmax){
+                    errmax=err;
+                }
+            }
+                    }
+        else if(x.equals("x2")){
+  for(int i=0;i<U.size();i++){
+                err=(Math.pow(((i+1)/(n+1)), 4)/12)+(b-a-(1/12))*((i+1)/(n+1))+a;
+                                err=Math.abs(err-(double)U.get(i));
+
+                                if(err>errmax){
+                    errmax=err;
+                }
+            }
+                    }
+        else if(x.equals("exp")){
+                         for(int i=0;i<U.size();i++){
+                err=(Math.exp(((i+1)/(n+1))))+(b-a-Math.exp(1)+1)*((i+1)/(n+1))+a-1;
+                               err=Math.abs(err-(double)U.get(i));
+
+                if(err>errmax){
+                    errmax=err;
+                }
+            }
+                    }
             
-            if (i == 0) { 
-                
-              Double  Ui1=(double) U.get(i + 1);
-              double  Ui_1=(double) a;
-                rob=((double) U.get(i + 1) + ((double) a - 2 * ((double) U.get(i))));
-                rob =( Math.pow(n+1, 2) * rob) - (double) F.get(i);
-                rob = Math.abs(rob);
-                if (rob > max) {
-                    max = rob;
-                }
-
-            } else if (i == F.size() - 1) {
-                rob = Math.pow(n+1, 2) * ((double) b + (double) U.get(i - 1) - (2 * ((double) U.get(i)))) - (double) F.get(i);
-
-                rob = Math.abs(rob);
-                if (rob > max) {
-                    max = rob;
-                }
-            } else {
-                rob = Math.pow(n+1, 2) * ((double) U.get(i - 1) + (double) U.get(i + 1) - (2 * ((double) U.get(i)))) - (double) F.get(i);
-                rob = Math.abs(rob);
-                if (rob  > max) {
-                    max = rob;
-                }
-            }
-
-
-        }
-                   System.out.println("l'erreur de  consistace est est"+max+"et tol c ezst"+tol);
- }
-        if (max < tol) {
+                   System.out.println("l'erreur de  consistace est est"+errmax+"et tol c ezst"+tol);
+ 
+        if (errmax < tol) {
             return true;
         } else {
             return false;
         }
-    
+        
     }}
 
+   /** LA FONCTION CI BAS RECUPERE LES DONNES SOUS LA FORME DU UPLET (F,a,b,n) ET   LES INSERE DANS UNE
+     PILE QUI SERA RETOURNEE A LA SORTIE  CETTE FONCTION MARCHE PARFAITEMENT SUIVANT LE RESPECT DES TYPES 
+     DONNE COMME DANS LE FICHIER df.txt DE CE DOSSIER  **/
     public Stack data() {
         Stack pile = new Stack();//on va garder nos donnés de test dans cette pile .
 
@@ -208,9 +229,19 @@ public class testhd {
                         donne_entre.add("x");
 
                         
-                    } else {
+                    } else if(line.split(" ")[4].equals("null")) {
                         
                             donne_entre.add("null");
+                          
+                    }
+                    else if(line.split(" ")[4].equals("x2")) {
+                        
+                            donne_entre.add("x2");
+                          
+                    }
+                    else  {
+                        
+                            donne_entre.add("exp");
                           
                     }
                     donne_entre.add(a);
@@ -237,12 +268,12 @@ public class testhd {
 
     public static void main(String[] args) throws Exception {
         testhd d = new testhd();
-        // d.data();
+        d.data();
          
-     d.test();
+        d.test();
       
-     boolean re=d.oracle(333000000, 2.0 ,3330, "x");
-             //System.out.println(re);
+     //boolean re=d.oracle(333000000, 2.0 ,3330, "x");
+       //     System.out.println(        d.data());
 
     }
 

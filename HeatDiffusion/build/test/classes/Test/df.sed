@@ -1,3 +1,4 @@
+# le script c est   sed -f df.sed df.txt
  s/2a/1a/                        
  s/1b/2b/                         
  s/1c/2c/                        
@@ -28,7 +29,8 @@
  s/3c/3330000/        
 #cas de f                              
  s/4a/null/                        
- s/4b/x/           
-s/3330000000000/333000000/
-s/0.0000000000333/0.0000003/
-               
+ s/4b/x/   
+ s/4c/x2/
+ s/4d/exp/
+           
+        

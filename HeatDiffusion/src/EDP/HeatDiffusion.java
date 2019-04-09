@@ -12,7 +12,7 @@ public class HeatDiffusion extends EDP1{
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
        Vector<Double> B = new Vector();
        int N = 4;
        for(int i = 1; i < N ; i++){
@@ -21,7 +21,7 @@ public class HeatDiffusion extends EDP1{
        HeatDiffusion H = new HeatDiffusion(333000, 2.0, N-1, B);
        H.getSolution();
     }
-
+*/
     public HeatDiffusion(double a, double b, int N, Vector<Double> B) {
         super(a, b, N, B);
     }
@@ -54,8 +54,5 @@ public class HeatDiffusion extends EDP1{
         System.out.println(U);
         return U;
     }
-      public void test(Map testParams) {
-        HeatDiffusion d=(HeatDiffusion)testParams.get("entry");
-        testParams.put("calulatedsolution",d.getSolution());        
-        }
+      
 }
